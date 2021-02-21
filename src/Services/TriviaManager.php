@@ -19,7 +19,7 @@ class TriviaManager
     /**
      * Max answers
      */
-    private const MAX_CORRECT = 1;
+    private const MAX_CORRECT = 20;
 
     /**
      * @var FragmentTriviaResource
