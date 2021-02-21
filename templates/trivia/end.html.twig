@@ -1,14 +1,7 @@
-{% extends 'base.html.twig' %}
+{% extends 'trivia_parent.html.twig' %}
 
-{% block title %}Hello TriviaController!{% endblock %}
-
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
+{% block inner %}
 <div class="example-wrapper">
-    <h3>{% if winner %} You won ;) {% else %} The correct answer is {{ answer }}. You lost ;({% endif %}</h3>
+    {% if winner %} {% include 'trivia/win.html.twig' %} {% else %} {% include 'trivia/loss.html.twig' %} {% endif %}
 </div>
 {% endblock %}

@@ -27,6 +27,8 @@ class TriviaController extends AbstractController
 
     private const ANSWER_KEY = 'answer';
 
+    private const LAST_QUESTION ='l_question';
+
     /**
      * @var
      */
@@ -67,6 +69,7 @@ class TriviaController extends AbstractController
 
         $session->set(self::PREV_QUESTIONS_KEY, $prevQuestions);
         $session->set(self::CORRECT_ANSWER_KEY, $answer);
+        $session->set(self::LAST_QUESTION, $question);
 
         $maxIterations = $this->triviaManager->getMaxIterations();
 
@@ -87,11 +90,7 @@ class TriviaController extends AbstractController
      */
     public function post(Request $request, SessionInterface $session): Response
     {
-        if (!(
-            $session->has(self::ITERATIONS_KEY)
-            || $session->has(self::CORRECT_ANSWER_KEY)
-            || $session->has(self::ANSWER_KEY))
-        ) {
+        if (!$session->isStarted()) {
             return $this->redirectToRoute('trivia');
         }
 
@@ -108,12 +107,18 @@ class TriviaController extends AbstractController
         }
 
         if ($winner !== null) {
-            $session->clear();
+            $lastQuestion = $session->get(self::LAST_QUESTION);
+
+            $session->invalidate();
 
             return $this->render('trivia/end.html.twig', [
                 'winner' => $winner,
                 'answer' => $correctAnswer,
+                'correct' => $iterations - 1,
+                'maxAnswers' => $this->triviaManager->getMaxIterations(),
+                'question' => $lastQuestion,
             ]);
+
         }
 
         $session->set(self::ITERATIONS_KEY, ++$iterations);
