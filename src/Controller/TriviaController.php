@@ -25,6 +25,8 @@ class TriviaController extends AbstractController
 
     private const CORRECT_ANSWER_KEY = 'correct_answer';
 
+    private const ANSWER_KEY = 'answer';
+
     /**
      * @var
      */
@@ -85,9 +87,17 @@ class TriviaController extends AbstractController
      */
     public function post(Request $request, SessionInterface $session): Response
     {
+        if (!(
+            $session->has(self::ITERATIONS_KEY)
+            || $session->has(self::CORRECT_ANSWER_KEY)
+            || $session->has(self::ANSWER_KEY))
+        ) {
+            return $this->redirectToRoute('trivia');
+        }
+
         $iterations = $session->get(self::ITERATIONS_KEY, 1);
         $correctAnswer = $session->get(self::CORRECT_ANSWER_KEY);
-        $submittedAnswer = $request->get('answer');
+        $submittedAnswer = $request->get(self::ANSWER_KEY);
 
         $winner = null;
 
